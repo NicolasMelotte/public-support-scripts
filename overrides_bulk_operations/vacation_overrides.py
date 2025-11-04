@@ -62,21 +62,21 @@ def create_overrides():
         start, end = dates
         print("Creating override on schedule %s (%s) from %s to %s..."%(
             schedule['id'], schedule['summary'], start, end))
-        create_response = session.post('/schedules/%s/overrides'%schedule['id'],
-            json={'override': {
-                "start": start,
-                "end": end,
-                "user": {
-                    "id": replacement_user['id'],
-                    "type": "user_reference" 
-                }
-            }}
-        )
-        if not create_response.ok:
-            message = "HTTP error: %d"%e.response.status_code
-            print("Error creating override; "+message)
+        try:
+            create_response = session.post('/schedules/%s/overrides'%schedule['id'],
+                json={'override': {
+                    "start": start,
+                    "end": end,
+                    "user": {
+                        "id": replacement_user['id'],
+                        "type": "user_reference" 
+                    }
+                }}
+            )
+            print("Success.")
+        except Exception as e:
+            print("Error creating override: %s" % str(e))
             continue
-        print("Success.")
 
 if __name__ == "__main__":
     create_overrides()
