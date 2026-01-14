@@ -104,7 +104,7 @@ def process_overrides(session: pagerduty.RestApiV2Client, schedule_ids: List[str
                     idtag = f"{user_summary}: {start_time} to {end_time}"
                     writer.writerow((sid, override_id, idtag))
                     
-                except (AttributeError, KeyError, TypeError, ValueError, csv.Error, OSError) as e:
+                except (AttributeError, KeyError, TypeError) as e:
                     logging.warning(f"Error processing override in schedule {sid}: {e}")
                     continue
                     

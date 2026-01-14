@@ -63,23 +63,41 @@ def create_overrides():
         print("Creating override on schedule %s (%s) from %s to %s..."%(
             schedule['id'], schedule['summary'], start, end))
         try:
-            create_response = session.post('/schedules/%s/overrides'%schedule['id'],
-                json={'override': {
-                    "start": start,
-                    "end": end,
-                    "user": {
-                        "id": replacement_user['id'],
-                        "type": "user_reference" 
+            create_response = session.post(
+                '/schedules/%s/overrides' % schedule['id'],
+                json={
+                    'override': {
+                        "start": start,
+                        "end": end,
+                        "user": {
+                            "id": replacement_user['id'],
+                            "type": "user_reference"
+                        }
                     }
-                }}
+                }
             )
             if create_response.ok:
-        except requests.exceptions.RequestException as e:
+                print("Successfully created override.")
             else:
                 print("Error creating override: HTTP %s - %s" % (
                     getattr(create_response, "status_code", "unknown"),
                     getattr(create_response, "text", "")
                 ))
+        except requests.exceptions.RequestException as e:
+            print("Error creating override: %s" % str(e))
+            continue
+        except Exception as e:
+            print("Unexpected error creating override: %s" % str(e))
+            continue
+                    getattr(create_response, "status_code", "unknown"),
+                    getattr(create_response, "text", "")
+                ))
+        except requests.exceptions.RequestException as e:
+            print("Error creating override: %s" % str(e))
+                ))
+        except requests.exceptions.RequestException as e:
+            print("Error creating override: %s" % str(e))
+            continue
         except Exception as e:
             print("Error creating override: %s" % str(e))
             continue
