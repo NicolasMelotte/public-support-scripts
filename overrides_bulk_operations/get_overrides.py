@@ -164,8 +164,8 @@ def main():
                    help="Enable verbose logging")
     ap.add_argument('--include-headers', action='store_true',
                    help="Include CSV column headers in output")
-    ap.add_argument('--help-examples', action='store_true', dest='help_examples',
-                   help="Show usage examples and exit")
+    ap.add_argument('-h', '--help', action='store_true', dest='help_examples',
+                   help="Show usage and exit")
 
     args = ap.parse_args()
 
