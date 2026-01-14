@@ -127,6 +127,7 @@ This script retrieves PagerDuty schedule overrides within a specified date range
 - `-c, --schedules`: Specific schedule IDs to search (can be used multiple times)
 - `-v, --verbose`: Enable detailed logging output
 - `--include-headers`: Add CSV column headers
+- `--team`: Filter to schedules belonging to the specified team name (case-insensitive). If multiple teams match the query, use the exact full name.
 
 #### Usage Examples
 
@@ -142,6 +143,9 @@ This script retrieves PagerDuty schedule overrides within a specified date range
 
 # Verbose output for debugging
 ./get_overrides.py -k $PAGERDUTY_TOKEN -s 2025-11-01 -e 2025-11-30 -v
+
+# Filter to a specific team by name
+./get_overrides.py -k $PAGERDUTY_TOKEN -s 2025-11-01 -e 2025-11-30 --team "Systems Infra"
 ```
 
 #### CSV Output Format
