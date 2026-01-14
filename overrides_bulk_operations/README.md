@@ -1,5 +1,13 @@
 # Override Bulk Operation Scripts
 
+## Table of Contents
+- [vacation_overrides.py](#vacation_overridespy)
+- [get_overrides.py](#get_overridespy)
+- [mass_delete_overrides.py](#mass_delete_overridespy)
+- [Bulk Override Cleanup Workflow](#bulk-override-cleanup-workflow)
+
+## vacation_overrides.py
+
 Using `vacation_overrides.py` (originally by Lucas Epp:
 [lfepp/35a2ce76114e7e6e3d7dece79eb7c635](https://gist.github.com/lfepp/35a2ce76114e7e6e3d7dece79eb7c635))
 one can create overrides on all schedules where a user going on vacation would be on-call, and overrides them with another user on that schedule.
@@ -8,10 +16,6 @@ If a lot of overrides are accidentally added, or one wishes to revert that
 action, these overrides can be almost as easily removed. The only way otherwise
 to clean up overrides is clicking on each and every one of them after assessing
 whether it is the correct override to delete, so we have scripts for that too.
-
-## Scripts Overview
-
-### vacation_overrides.py
 
 This script automates the creation of PagerDuty schedule overrides for vacation coverage. When a team member goes on vacation, this script identifies all their scheduled on-call shifts and creates overrides to assign those shifts to a substitute user.
 
@@ -90,7 +94,7 @@ Success.
 - **Time Zones**: All times are processed in UTC as returned by the PagerDuty API
 - **Cleanup**: Use `get_overrides.py` and `mass_delete_overrides.py` if you need to remove the created overrides later
 
-### get_overrides.py
+## get_overrides.py
 
 This script retrieves PagerDuty schedule overrides within a specified date range and exports them to CSV format. It's designed to help with bulk override management and cleanup operations.
 
@@ -161,6 +165,50 @@ P123ABC,OVR789GHI,Jane Doe: 2025-11-02T09:00:00Z to 2025-11-02T17:00:00Z
 - Python 3.6+
 - `pagerduty` Python module: `pip install pagerduty`
 - Valid PagerDuty API key with appropriate permissions
+
+#### Sample Output
+
+```text
+# Basic (stdout, no headers)
+P123ABC,OVR456DEF,John Smith: 2025-11-01T09:00:00Z to 2025-11-01T17:00:00Z
+P123ABC,OVR789GHI,Jane Doe: 2025-11-02T09:00:00Z to 2025-11-02T17:00:00Z
+
+# With --include-headers
+Schedule ID,Override ID,User and Time Range
+P123ABC,OVR456DEF,John Smith: 2025-11-01T09:00:00Z to 2025-11-01T17:00:00Z
+P123ABC,OVR789GHI,Jane Doe: 2025-11-02T09:00:00Z to 2025-11-02T17:00:00Z
+
+# Verbose mode (-v)
+[INFO] Using schedules: all
+[INFO] Time range: 2025-11-01T00:00:00Z to 2025-11-30T23:59:59Z
+[INFO] Fetching schedules...
+[INFO] Processing schedule P123ABC (Systems Infra - Primary)
+[DEBUG] Retrieved 2 overrides
+P123ABC,OVR456DEF,John Smith: 2025-11-01T09:00:00Z to 2025-11-01T17:00:00Z
+P123ABC,OVR789GHI,Jane Doe: 2025-11-02T09:00:00Z to 2025-11-02T17:00:00Z
+[INFO] Done. Total overrides: 2
+```
+
+## mass_delete_overrides.py
+
+Deletes overrides listed in a CSV (as produced by get_overrides.py). Reads each line and attempts to delete the corresponding override.
+
+#### Sample Output
+
+```text
+Reading overrides from overrides.csv...
+Validating CSV format...
+Found 2 overrides to delete.
+Deleting override OVR456DEF on schedule P123ABC...
+Success.
+Deleting override OVR789GHI on schedule P123ABC...
+Failed (404 Not Found). Skipping.
+
+Summary:
+- Attempted: 2
+- Deleted: 1
+- Failed: 1
+```
 
 ## Bulk Override Cleanup Workflow
 
