@@ -134,11 +134,6 @@ Examples:
 """.strip()
 
 
-def print_help_examples(parser: argparse.ArgumentParser) -> None:
-    """Print standard help (including examples) and exit."""
-    parser.print_help()
-
-
 def main():
     ap = argparse.ArgumentParser(
         description="Gets all overrides in PagerDuty schedules and exports to CSV. "
@@ -164,15 +159,8 @@ def main():
                    help="Enable verbose logging")
     ap.add_argument('--include-headers', action='store_true',
                    help="Include CSV column headers in output")
-    ap.add_argument('-h', '--help', action='store_true', dest='help_examples',
-                   help="Show usage and exit")
 
     args = ap.parse_args()
-
-    # Show full standard help (with examples) and exit
-    if getattr(args, 'help_examples', False):
-        print_help_examples(ap)
-        sys.exit(0)
 
     # Set up logging
     setup_logging(args.verbose)

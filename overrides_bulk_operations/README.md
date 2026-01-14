@@ -144,7 +144,7 @@ This script retrieves PagerDuty schedule overrides within a specified date range
 ./get_overrides.py -k $PAGERDUTY_TOKEN -s 2025-11-01 -e 2025-11-30 -v
 
 # Filter to a specific team by name
-./get_overrides.py -k $PAGERDUTY_TOKEN -s 2025-11-01 -e 2025-11-30 --team "Systems Infra"
+./get_overrides.py -k $PAGERDUTY_TOKEN -s 2025-11-01 -e 2025-11-30 --team "Systems Infrastructure"
 ```
 
 #### CSV Output Format
