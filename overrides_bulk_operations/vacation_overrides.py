@@ -86,7 +86,6 @@ def create_overrides():
         schedules = [s['id'] for s in session.iter_all('schedules')]
     print("Looking for shifts that will require coverage...")
     shifts = find_shifts(session, vacationing_user['id'], args.start, args.end, schedules)
-    print("Looking for shifts that will require coverage. done.")
 
     print("Looping over shifts...")
     for dates, schedule in shifts.items():
