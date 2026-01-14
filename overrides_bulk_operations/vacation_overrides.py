@@ -73,7 +73,13 @@ def create_overrides():
                     }
                 }}
             )
-            print("Success.")
+            if create_response.ok:
+        except requests.exceptions.RequestException as e:
+            else:
+                print("Error creating override: HTTP %s - %s" % (
+                    getattr(create_response, "status_code", "unknown"),
+                    getattr(create_response, "text", "")
+                ))
         except Exception as e:
             print("Error creating override: %s" % str(e))
             continue
