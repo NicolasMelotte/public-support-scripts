@@ -115,11 +115,36 @@ def process_overrides(session: pagerduty.RestApiV2Client, schedule_ids: List[str
     return total_overrides
 
 
+EXAMPLES = """
+Examples:
+  # Basic usage - output to terminal
+  %(prog)s -k $PAGERDUTY_TOKEN -s 2025-11-01 -e 2025-11-30
+
+  # Save to file with headers
+  %(prog)s -k $PAGERDUTY_TOKEN -s 2025-11-01 -e 2025-11-30 -f overrides.csv --include-headers
+
+  # Search specific schedules only
+  %(prog)s -k $PAGERDUTY_TOKEN -s 2025-11-01 -e 2025-11-30 -c SCHEDULE1 -c SCHEDULE2
+
+  # Verbose output for debugging
+  %(prog)s -k $PAGERDUTY_TOKEN -s 2025-11-01 -e 2025-11-30 -v
+
+  # Filter to a specific team by name
+  %(prog)s -k $PAGERDUTY_TOKEN -s 2025-11-01 -e 2025-11-30 -t "Systems Infra"
+""".strip()
+
+
+def print_help_examples(parser: argparse.ArgumentParser) -> None:
+    """Print standard help (including examples) and exit."""
+    parser.print_help()
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="Gets all overrides in PagerDuty schedules and exports to CSV. "
-                   "The output contains schedule ID, override ID, and user/time information.",
-        formatter_class=argparse.RawDescriptionHelpFormatter
+                    "Outputs schedule ID, override ID, and user/time information.",
+        epilog=EXAMPLES,
+        formatter_class=argparse.RawTextHelpFormatter
     )
     
     ap.add_argument('-k', '--api-key', type=str, required=True,
@@ -133,15 +158,22 @@ def main():
     ap.add_argument('-c', '--schedules', default=[], action='append',
                    help="Schedule IDs to search (can be used multiple times). "
                         "If not specified, all schedules will be included.")
+    ap.add_argument('-t', '--team', dest='team_name', type=str,
+                   help="Filter to schedules belonging to the specified team name")
     ap.add_argument('-v', '--verbose', action='store_true',
                    help="Enable verbose logging")
     ap.add_argument('--include-headers', action='store_true',
                    help="Include CSV column headers in output")
-    ap.add_argument('--team', dest='team_name', type=str,
-                   help="Filter to schedules belonging to the specified team name")
+    ap.add_argument('--help-examples', action='store_true', dest='help_examples',
+                   help="Show usage examples and exit")
 
     args = ap.parse_args()
-    
+
+    # Show full standard help (with examples) and exit
+    if getattr(args, 'help_examples', False):
+        print_help_examples(ap)
+        sys.exit(0)
+
     # Set up logging
     setup_logging(args.verbose)
     
